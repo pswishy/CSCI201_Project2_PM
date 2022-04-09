@@ -22,4 +22,7 @@ while:
 
 
 
-      
+exit:
+
+      li $v0, 10
+      sycall
