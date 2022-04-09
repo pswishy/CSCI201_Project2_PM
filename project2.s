@@ -1,6 +1,6 @@
 .data
 userInput:  .space 1001 # allow user to input string of 1000 characters
-
+error .asciiz "Not recognized"
 .text
 
 main: 
@@ -24,8 +24,10 @@ while:
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
 
-
       bgt $t0, 4, errorMessage # if length t0 greater than 4 print error message exit
+      
+      blt $s1, 48, errorMessage # 48 = '0' in ascii. if char < 48 skip it 
+
 tabOrSpaceCharFound:
       # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
       beq $t0, 0, skip # if t0 equals 0 leading whitespace dont update length of userinput string
@@ -38,6 +40,13 @@ skip:
       addi $t1, $t1, 1 # increment loop break condition
       j while
 
+errorMessage:
+      # print error message
+      li $v0, 4
+      la $a0, error
+      syscall
+
+      j exit
 
 exit:
 
