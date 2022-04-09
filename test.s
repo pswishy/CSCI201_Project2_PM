@@ -25,7 +25,7 @@ while:
     beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
     beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
 
-    beq $t0, 0, string
+    beq $t0, 0, error
 tabOrSpaceCharFound:
     # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
     beq $t0, 0, skip # if t0 equals 0 leading whitespace dont update length of userinput string
