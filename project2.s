@@ -24,27 +24,37 @@ main:
 while:  
       lb $s1, 0($t9)
       beq $t1, 1000, exit
+      beq $t0, 4, exit
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
 
 
       # if we get here we are at a char and no more leading whitespace
       # ------------------------
+
+      addi $t0,$t0, 1 # increment length of user string by 1
+      addi $t1, $t1, 1 # increment loop
+      addi $t9, $t9, 1 # increment loop address for loop
+      move $a2, $t9
+      j while
+
       # we need to pass memory address of string to function
       # memory address stored in $t9
+      # --------------------
 
-      move $a2, $t9
-      jal calculate
+      # move $a2, $t9
+      # jal calculate
       
-
 
 tabOrSpaceCharFound:
       # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
       beq $t0, 0, skip # if t0 equals 0 leading whitespace dont update length of userinput string
       
-      # if $t0 is not equal to 0 then tab or space char is a invalid char because it not in our range. 
-      j errorMessage
-
+      # if $t0 is not 0 we need to find out if there is trailing white space or it is part of string
+      addi $t0,$t0, 1 # increment length of user string by 1
+      addi $t1, $t1, 1 # increment loop
+      addi $t9, $t9, 1 # increment loop address for loop
+      j while
 calculate:
 
       lb $s2, 0($t9)
@@ -52,7 +62,10 @@ calculate:
       # first check all invalid chars
       blt $s2, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error message and exit
 
+      ble $s2, 57, calculateNum # 57 = '9' in ascii. if char <= 57 calculate it
 
+calculateNum:
+      # exponent * 
 
 
 skip:
@@ -61,6 +74,7 @@ skip:
       j while
 
 exit:
+      lb $s2, -1($a2)
 
       li $v0, 10
       syscall
