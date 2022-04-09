@@ -52,10 +52,7 @@ tabOrSpaceCharFound:
 
 calculate:
 
-      li $v0, 4
-      la $a0, testing
-      syscall
-
+      lb $s2, 0($t9)
       j exit
 
 
