@@ -28,17 +28,17 @@ while:
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
 
 
-      beq $t0, 0, errorMessage
+      # if we get here we are at a char and no more leading whitespace
+      # ------------------------
+      # we need to pass memory address of string to function
+      # memory address stored in $t9
 
       # bgt $t0, 4, errorMessage # if length t0 greater than 4 print error message exit
-      
       
       # blt $s1, 48, errorMessage # 48 = '0' in ascii. if char < 48 invalid char. print message and exit
 
       # start logic for valid char. (may have to update bgt t0 4 line)
-      # pass char as argument
-      # addi $a2, $s1, 0 # a1 hold 1 argument pass to add num function
-      # jal sumNum
+      
 
 
 tabOrSpaceCharFound:
@@ -47,6 +47,9 @@ tabOrSpaceCharFound:
       
       # if $t0 is not equal to 0 then tab or space char is a invalid char because it not in our range. 
       j errorMessage
+
+sumNum:
+
 
 skip:
       addi $t9, $t9, 1 # increment loop address for loop
