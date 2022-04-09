@@ -10,3 +10,16 @@ main:
       la $a0, userInput # stores user in put in $a0
       li $a1, 1001 # max lengeth of user input string
       syscall
+
+      # first step count how many chars are in userinput while ignoring blank and space tabs
+      li $t0, 0 # t0 = length of user input string
+      li $t1, 0 # iterator variable
+      la $t9, userInput
+# where we will count length of userinput
+while:  
+      lb $s1, 0($t9)
+      beq $t1, 1000, exit
+
+
+
+      
