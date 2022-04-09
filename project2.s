@@ -1,7 +1,7 @@
 .data
 userInput:  .space 11 # allow user to input string of 1000 characters
 string: .asciiz "Invalid"
-
+testing: .asciiz "testing"
 .text
 
 main: 
@@ -33,6 +33,8 @@ while:
       # we need to pass memory address of string to function
       # memory address stored in $t9
 
+      move $a2, $t9
+      jal calculate
       # bgt $t0, 4, errorMessage # if length t0 greater than 4 print error message exit
       
       # blt $s1, 48, errorMessage # 48 = '0' in ascii. if char < 48 invalid char. print message and exit
@@ -48,7 +50,14 @@ tabOrSpaceCharFound:
       # if $t0 is not equal to 0 then tab or space char is a invalid char because it not in our range. 
       j errorMessage
 
-sumNum:
+calculate:
+
+      li $v0, 4
+      la $a0, testing
+      syscall
+
+      j exit
+
 
 
 skip:
