@@ -35,11 +35,6 @@ while:
 
       move $a2, $t9
       jal calculate
-      # bgt $t0, 4, errorMessage # if length t0 greater than 4 print error message exit
-      
-      # blt $s1, 48, errorMessage # 48 = '0' in ascii. if char < 48 invalid char. print message and exit
-
-      # start logic for valid char. (may have to update bgt t0 4 line)
       
 
 
@@ -53,7 +48,10 @@ tabOrSpaceCharFound:
 calculate:
 
       lb $s2, 0($t9)
-      j exit
+      
+      # first check all invalid chars
+      blt $s2, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error message and exit
+
 
 
 
