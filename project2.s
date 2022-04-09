@@ -19,6 +19,10 @@ main:
 while:  
       lb $s1, 0($t9)
       beq $t1, 1000, exit
+      beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
+
+tabOrSpaceCharFound:
+      # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
 
 
 
