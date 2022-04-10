@@ -39,10 +39,9 @@ while:
       move $a2, $t9 # will hold memory address of 4th char 
       j while
 
-    
 
-      # move $a2, $t9
-      # jal calculate
+
+
       
 LeadingWhiteSpaceCounter:
      addi $t5, $t5, 1 # add 1 to leading whitespace counter
@@ -61,7 +60,7 @@ trailingWhiteSpaceCheck:
       beq $s1, 32, skip # 32 = space char, 9 = tab char
       beq $s1, 0, skip # 0 = null char
 
-      # if after first 4 chars there is any of char go to error and end
+      # if after first 4 chars there is any other char go to error and end
       j errorMessage
 
 
@@ -70,10 +69,17 @@ calculateMemoryAdress:
       # we need to pass memory address of string to function
       # memory address stored in $a2
       # --------------------
-      sub $s3, $a2, 5 # memory address of 4 char str - 5 is now stored in s3
-      sub $s3, $s3, $t5 # s3 = memory addres - leading white space
-      lb $s3 0($s3)
+      sub $a3, $a2, 5 # memory address of 4 char str - 5 is now stored in s3
+      # a3 holds memory address argument
+
+
+      jal doMath
+
+doMath:
+      lb $s6 0($a3)
+
       j exit
+
 
 
 skip:
