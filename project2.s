@@ -17,6 +17,8 @@ main:
       li $t3, 30 # base for my program
       li $t4, 0 # length counter
       li $t5, 0 # leading white space counter
+      li $s6, 0 # sum variable
+      li $t6, 1
       la $t9, userInput
 
 
@@ -86,11 +88,21 @@ exponent:
       sub $a3, $a3, $t4 # go back to original memory addres now that we know length of string
       sub $t2, $t4, 1 # the first char exponent is length of char - 1
       # lb $s6 0($a3) # load  char into $s6
-      jal multiplicationloop
+      jal charcheck
+charcheck:
+      lb $s6, 0($a3)
+
+      blt $s6, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error 
+      ble $s6, 57, multiplicationloop # 57 = '9' in ascii. if char <= 57 add it to sum
+
 
 multiplicationloop:
-lb $s6 0($a3)
-
+# multiply char in s6 times base to the power of t2
+      lb $s6 0($a3)
+      beq $t6, $t2,increment
+      mul $s4, $t3, $t3 # multipy base by base and store in s4
+      mul $s5, $s4, $s6 # multiply char value times exponent
+      add $s6, $s5, $s6 # sum variable is s6
 skip:
       addi $t9, $t9, 1 # increment loop address for loop
       addi $t1, $t1, 1 # increment loop break condition
