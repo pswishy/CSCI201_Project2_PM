@@ -24,7 +24,7 @@ main:
 # where we will count length of userinput
 while:  
       lb $s1, 0($t9)
-      beq $t1, 1000, exit # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+      beq $t1, 1000, calculate # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
       bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
@@ -69,12 +69,11 @@ trailingWhiteSpaceCheck:
 
 calculate:
 
-      lb $s2, 0($t9)
-      
-      # first check all invalid chars
-      blt $s2, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error message and exit
+      li $v0, 4
+      la $a0, testing
+      syscall
 
-      ble $s2, 57, calculateNum # 57 = '9' in ascii. if char <= 57 calculate it
+      j exit
 
 calculateNum:
       # exponent * 
