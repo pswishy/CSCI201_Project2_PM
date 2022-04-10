@@ -47,7 +47,9 @@ while:
       # jal calculate
       
 LeadingWhiteSpaceCounter:
-      addi $t5, $t5, 1 # add 1 to leading whitespace counter
+     addi $t5, $t5, 1 # add 1 to leading whitespace counter
+     j skip
+
 tabOrSpaceCharFound:
       # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
       beq $t0, 0 LeadingWhiteSpaceCounter
