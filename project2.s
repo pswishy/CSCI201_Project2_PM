@@ -96,7 +96,7 @@ charcheck:
 
       blt $s6, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error 
       ble $s6, 57, multiplicationloop # 57 = '9' in ascii. if char <= 57 add it to sum
-
+      
 
 multiplicationloop:
 
@@ -110,6 +110,13 @@ multiplicationloop:
 
 exponent3:
 
+      mul $s7, 33, 33
+      mul $s7, 33, $s7
+      mul $s7, $s7, $a3 # multiply a3 char value by 33 * 33 * 33
+      add $s6, $s6, $s7
+      li $s7, 0
+      sub $t2, $t2, 1 # decrement exponent value by 1
+      j increment
 exponent2:
       mul $s7, 33, 33
       mul $s7, $s7, $a3 # have to multiply char value 
@@ -127,6 +134,9 @@ exponent1:
       j increment
 
 exponent0:
+      add $v1, $s6, $a3 # exponent 0 just add char value to sum
+      # li $s7, 0
+      jr $ra
 
 increment:
       addi $a3, $a3, 1 # increment byte address
