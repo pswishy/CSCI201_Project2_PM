@@ -25,7 +25,7 @@ main:
 while:  
       lb $s1, 0($t9)
       beq $t1, 1000, exit
-      bgt $t0, 4, exit
+      beq $t0, 4, tabOrSpaceCharFound # after we get first four chars the only other other valid char is a white space char
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
 
@@ -52,13 +52,11 @@ tabOrSpaceCharFound:
       beq $t0, 0, skip # if t0 equals 0 leading whitespace dont update length of userinput string
       
       # if t0 == 4 and whitespace char is found ignore?
+      beq $t0, 4, skip
+      # if $t0 is not 0 or 4 and then no other char should be checked print error and end
+      j errorMessage
+      
 
-      # if $t0 is not 0 we need to find out if there is trailing white space or it is part of string
-      addi $t0,$t0, 1 # increment length of user string by 1
-      addi $t1, $t1, 1 # increment loop
-      addi $t9, $t9, 1 # increment loop address for loop
-      addi $t5, $t5, 1 # increment trailing whitespace counter
-      j while
 calculate:
 
       lb $s2, 0($t9)
@@ -78,14 +76,14 @@ skip:
       j while
 
 exit:
-      lb $s2, -1($a2)
+      lb $s2, ($t9)
 
       li $v0, 10
       syscall
 
 
 errorMessage:
-#       # print error message
+      # print error message
       li $v0, 4
       la $a0, string
       syscall
