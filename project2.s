@@ -24,7 +24,7 @@ main:
 # where we will count length of userinput
 while:  
       lb $s1, 0($t9)
-      beq $t1, 1000, calculate # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+      beq $t1, 1000, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
       bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
@@ -39,9 +39,7 @@ while:
       move $a2, $t9 # will hold memory address of 4th char 
       j while
 
-      # we need to pass memory address of string to function
-      # memory address stored in $t9
-      # --------------------
+    
 
       # move $a2, $t9
       # jal calculate
@@ -67,16 +65,15 @@ trailingWhiteSpaceCheck:
       j errorMessage
 
 
-calculate:
+calculateMemoryAdress:
 
-      li $v0, 4
-      la $a0, testing
-      syscall
-
+      # we need to pass memory address of string to function
+      # memory address stored in $a2
+      # --------------------
+      sub $s3, $a2, 5 # memory address of 4 char str - 5 is now stored in s3
+      sub $s3, $s3, $t5 # s3 = memory addres - leading white space
+      lb $s3 0($s3)
       j exit
-
-calculateNum:
-      # exponent * 
 
 
 skip:
