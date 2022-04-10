@@ -117,8 +117,15 @@ exponent2:
       li $s7, 0 # set s7 back to zero
       sub $t2, $t2, 1 # decrement exponent value by 1
       j increment
+
 exponent1:
- 
+      
+      mul $s7, 33, $a3 # if exponent 1 all i have to do is multiply char value by 33
+      add $s6, $s6, $s7
+      li $s7, 0
+      sub $t2, $t2, 1 # decrement exponent value by 1
+      j increment
+
 exponent0:
 
 increment:
