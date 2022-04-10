@@ -1,6 +1,6 @@
 .data
 userInput:  .space 1001 # allow user to input string of 1000 characters
-string: .asciiz "Invalid"
+string: .asciiz "Not recognized"
 testing: .asciiz "testing"
 .text
 
