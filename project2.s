@@ -106,18 +106,24 @@ multiplicationloop:
       beq $t2, 0, exponent0
      
 # s6 is sum variable
+# t3 holds base
+
 exponent3:
 
 exponent2:
-      mul 
-
+      mul $s7, 33, 33
+      mul $s7, $s7, $a3 # have to multiply char value 
+      add $s6, $s6, $s7 # add into sum var s6
+      li $s7, 0 # set s7 back to zero
+      sub $t2, $t2, 1 # decrement exponent value by 1
+      j increment
 exponent1:
-
+ 
 exponent0:
 
 increment:
       addi $a3, $a3, 1 # increment byte address
-      j multiplicationloop
+      j charcheck
 skip:
       addi $t9, $t9, 1 # increment loop address for loop
       addi $t1, $t1, 1 # increment loop break condition
