@@ -14,9 +14,9 @@ main:
       # first step count how many chars are in userinput while ignoring blank and space tabs
       li $t0, 0 # t0 = length of user input string
       li $t1, 0 # iterator variable
-      li $t2, 0 # exponent tracker
+      li $t2, 3 # exponent tracker
       li $t3, 33 # base for my program
-      li $t4, 0 # sum variable
+      li $t4, 0 # length counter
       li $t5, 0 # leading white space counter
       la $t9, userInput
 
@@ -73,13 +73,17 @@ calculateMemoryAdress:
       # a3 holds memory address argument
 
 
-      jal doMath
+      jal findLength
 
-doMath:
+findLength:
       lb $s6 0($a3)
+      beq $s6, 10, codetesting # if char equals line feed end
+      addi $t4, $t4, 1 # add 1 to t4
+      addi $a3, $a3, 1
+      j findLength
+      
 
-      j exit
-
+exponent:
 
 
 skip:
@@ -93,7 +97,11 @@ exit:
       li $v0, 10
       syscall
 
-
+codetesting:
+      li $v0, 4
+      la $a0, testing
+      syscall
+      j exit
 errorMessage:
       # print error message
       li $v0, 4
