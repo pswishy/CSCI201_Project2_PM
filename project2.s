@@ -24,8 +24,8 @@ main:
 # where we will count length of userinput
 while:  
       lb $s1, 0($t9)
-      beq $t1, 1000, exit
-      beq $t0, 4, tabOrSpaceCharFound # after we get first four chars the only other other valid char is a white space char
+      beq $t1, 1000, exit # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+      bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
 
@@ -36,7 +36,7 @@ while:
       addi $t0,$t0, 1 # increment length of user string by 1
       addi $t1, $t1, 1 # increment loop
       addi $t9, $t9, 1 # increment loop address for loop
-      move $a2, $t9
+      move $a2, $t9 # will hold memory address of 4th char 
       j while
 
       # we need to pass memory address of string to function
@@ -51,11 +51,17 @@ tabOrSpaceCharFound:
       # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
       beq $t0, 0, skip # if t0 equals 0 leading whitespace dont update length of userinput string
       
-      # if t0 == 4 and whitespace char is found ignore?
-      beq $t0, 4, skip
       # if $t0 is not 0 or 4 and then no other char should be checked print error and end
-      j errorMessage
+      # j errorMessage
       
+trailingWhiteSpaceCheck:
+      beq $s1, 9, skip # if the char is a tab we have to give special consideration
+      beq $s1, 32, skip # 32 = space char, 9 = tab char
+      beq $s1, 0, skip # 0 = null char
+
+      # if after first 4 chars there is any of char go to error and end
+      j errorMessage
+
 
 calculate:
 
