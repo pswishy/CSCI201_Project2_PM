@@ -14,10 +14,10 @@ main:
       # first step count how many chars are in userinput while ignoring blank and space tabs
       li $t0, 0 # t0 = length of user input string
       li $t1, 0 # iterator variable
-      li $t3, 33 # base for my program
+      li $t3, 30 # base for my program
       li $t4, 0 # length counter
       li $t5, 0 # leading white space counter
-      li $s6, 0 # sum variable
+      li $t8, 0 # sum variable
       li $t6, 1
       la $t9, userInput
 
@@ -25,7 +25,7 @@ main:
 # where we will count length of userinput
 while:  
       lb $s1, 0($t9)
-      beq $t1, 1000, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+      beq $t1, 6, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
       bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
@@ -90,14 +90,16 @@ exponent:
       # lb $s6 0($a3) # load  char into $s6
       jal charcheck
 
-      j exit
+      j print
 charcheck:
       lb $s6, 0($a3)
 
       blt $s6, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error 
-      ble $s6, 57, multiplicationloop # 57 = '9' in ascii. if char <= 57 add it to sum
+      ble $s6, 57, numCalc # 57 = '9' in ascii. if char <= 57 add it to sum
       
-
+numCalc:
+      sub $s6, $s6, 48 # if number found update val of char to be - 48
+      j multiplicationloop
 multiplicationloop:
 
       beq $t2, 3, exponent3 
@@ -113,31 +115,38 @@ exponent3:
       # mul $s7, 33, 33
       # mul $s7, 33, $s7
       # mul $s7, $s7, $a3 # multiply a3 char value by 33 * 33 * 33
-      add $s6, $s6, $s7
+      mult $t3, $t3
+      mflo $s7
+      mult $t3, $s7
+      mflo $s7
+      mult $s6, $s7 # multipy char val * 33^3
+      mflo $s7
+      add $t8, $t8, $s7
       li $s7, 0
       sub $t2, $t2, 1 # decrement exponent value by 1
       j increment
 
 exponent2:
       mult $t3, $t3 # t3 is register with base value
+      mflo $s7 # 33^2
+      mult $s7, $s6 # have to multiply char value 
       mflo $s7
-      mult $s7, $a3 # have to multiply char value 
-      mflo $s7
-      add $s6, $s6, $s7 # add into sum var s6
+      add $t8, $t8, $s7 # add into sum var t8
       li $s7, 0 # set s7 back to zero
       sub $t2, $t2, 1 # decrement exponent value by 1
       j increment
 
 exponent1:
-      
+      mult $t3, $s6
       # mul $s7, 33, $a3 # if exponent 1 all i have to do is multiply char value by 33
-      add $s6, $s6, $s7
+      mflo $s7
+      add $t8, $t8, $s7
       li $s7, 0
       sub $t2, $t2, 1 # decrement exponent value by 1
       j increment
 
 exponent0:
-      add $v1, $s6, $a3 # exponent 0 just add char value to sum
+      add $v1, $t8, $s6 # exponent 0 just add char value to sum
       # li $s7, 0
       jr $ra
 
@@ -154,7 +163,12 @@ exit:
 
       li $v0, 10
       syscall
-
+print:
+ 
+      li $v0, 1
+      addi $a0, $v1, 0
+      syscall
+      j exit
 codetesting:
       li $v0, 4
       la $a0, testing
