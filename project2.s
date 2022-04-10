@@ -14,8 +14,7 @@ main:
       # first step count how many chars are in userinput while ignoring blank and space tabs
       li $t0, 0 # t0 = length of user input string
       li $t1, 0 # iterator variable
-      li $t2, 3 # exponent tracker
-      li $t3, 33 # base for my program
+      li $t3, 30 # base for my program
       li $t4, 0 # length counter
       li $t5, 0 # leading white space counter
       la $t9, userInput
@@ -73,18 +72,24 @@ calculateMemoryAdress:
       # a3 holds memory address argument
 
 
-      jal findLength
+      j findLength
 
 findLength:
       lb $s6 0($a3)
-      beq $s6, 10, codetesting # if char equals line feed end
+      beq $s6, 10, codetesting # if char equals line feed we know how long the string is so we know what exponent we need to use
       addi $t4, $t4, 1 # add 1 to t4
       addi $a3, $a3, 1
       j findLength
       
 
 exponent:
+      sub $a3, $a3, $t4 # go back to original memory addres now that we know length of string
+      sub $t2, $t4, 1 # the first char exponent is length of char - 1
+      # lb $s6 0($a3) # load  char into $s6
+      jal multiplicationloop
 
+multiplicationloop:
+lb $s6 0($a3)
 
 skip:
       addi $t9, $t9, 1 # increment loop address for loop
@@ -92,7 +97,6 @@ skip:
       j while
 
 exit:
-      lb $s2, ($t9)
 
       li $v0, 10
       syscall
@@ -102,6 +106,7 @@ codetesting:
       la $a0, testing
       syscall
       j exit
+
 errorMessage:
       # print error message
       li $v0, 4
