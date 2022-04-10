@@ -17,7 +17,7 @@ main:
       li $t2, 0 # exponent tracker
       li $t3, 33 # base for my program
       li $t4, 0 # sum variable
-      li $t5, 0 # trailing white space counter
+      li $t5, 0 # leading white space counter
       la $t9, userInput
 
 
@@ -46,9 +46,11 @@ while:
       # move $a2, $t9
       # jal calculate
       
-
+LeadingWhiteSpaceCounter:
+      addi $t5, $t5, 1 # add 1 to leading whitespace counter
 tabOrSpaceCharFound:
       # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
+      beq $t0, 0 LeadingWhiteSpaceCounter
       beq $t0, 0, skip # if t0 equals 0 leading whitespace dont update length of userinput string
       
       # if $t0 is not 0 or 4 and then no other char should be checked print error and end
