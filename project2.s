@@ -89,6 +89,8 @@ exponent:
       sub $t2, $t4, 1 # the first char exponent is length of char - 1
       # lb $s6 0($a3) # load  char into $s6
       jal charcheck
+
+
 charcheck:
       lb $s6, 0($a3)
 
@@ -97,12 +99,25 @@ charcheck:
 
 
 multiplicationloop:
-# multiply char in s6 times base to the power of t2
-      lb $s6 0($a3)
-      beq $t6, $t2,increment
-      mul $s4, $t3, $t3 # multipy base by base and store in s4
-      mul $s5, $s4, $s6 # multiply char value times exponent
-      add $s6, $s5, $s6 # sum variable is s6
+
+      beq $t2, 3, exponent3 
+      beq $t2, 2, exponent2
+      beq $t2, 1, exponent1
+      beq $t2, 0, exponent0
+     
+# s6 is sum variable
+exponent3:
+
+exponent2:
+      mul 
+
+exponent1:
+
+exponent0:
+
+increment:
+      addi $a3, $a3, 1 # increment byte address
+      j multiplicationloop
 skip:
       addi $t9, $t9, 1 # increment loop address for loop
       addi $t1, $t1, 1 # increment loop break condition
