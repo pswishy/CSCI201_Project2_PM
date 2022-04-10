@@ -14,7 +14,7 @@ main:
       # first step count how many chars are in userinput while ignoring blank and space tabs
       li $t0, 0 # t0 = length of user input string
       li $t1, 0 # iterator variable
-      li $t3, 30 # base for my program
+      li $t3, 33 # base for my program
       li $t4, 0 # length counter
       li $t5, 0 # leading white space counter
       li $s6, 0 # sum variable
@@ -78,7 +78,7 @@ calculateMemoryAdress:
 
 findLength:
       lb $s6 0($a3)
-      beq $s6, 10, codetesting # if char equals line feed we know how long the string is so we know what exponent we need to use
+      beq $s6, 10, exponent # if char equals line feed we know how long the string is so we know what exponent we need to use
       addi $t4, $t4, 1 # add 1 to t4
       addi $a3, $a3, 1
       j findLength
@@ -90,7 +90,7 @@ exponent:
       # lb $s6 0($a3) # load  char into $s6
       jal charcheck
 
-
+      j exit
 charcheck:
       lb $s6, 0($a3)
 
@@ -110,16 +110,19 @@ multiplicationloop:
 
 exponent3:
 
-      mul $s7, 33, 33
-      mul $s7, 33, $s7
-      mul $s7, $s7, $a3 # multiply a3 char value by 33 * 33 * 33
+      # mul $s7, 33, 33
+      # mul $s7, 33, $s7
+      # mul $s7, $s7, $a3 # multiply a3 char value by 33 * 33 * 33
       add $s6, $s6, $s7
       li $s7, 0
       sub $t2, $t2, 1 # decrement exponent value by 1
       j increment
+
 exponent2:
-      mul $s7, 33, 33
-      mul $s7, $s7, $a3 # have to multiply char value 
+      mult $t3, $t3 # t3 is register with base value
+      mflo $s7
+      mult $s7, $a3 # have to multiply char value 
+      mflo $s7
       add $s6, $s6, $s7 # add into sum var s6
       li $s7, 0 # set s7 back to zero
       sub $t2, $t2, 1 # decrement exponent value by 1
@@ -127,7 +130,7 @@ exponent2:
 
 exponent1:
       
-      mul $s7, 33, $a3 # if exponent 1 all i have to do is multiply char value by 33
+      # mul $s7, 33, $a3 # if exponent 1 all i have to do is multiply char value by 33
       add $s6, $s6, $s7
       li $s7, 0
       sub $t2, $t2, 1 # decrement exponent value by 1
@@ -141,6 +144,7 @@ exponent0:
 increment:
       addi $a3, $a3, 1 # increment byte address
       j charcheck
+
 skip:
       addi $t9, $t9, 1 # increment loop address for loop
       addi $t1, $t1, 1 # increment loop break condition
