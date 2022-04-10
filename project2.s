@@ -1,5 +1,5 @@
 .data
-userInput:  .space 11 # allow user to input string of 1000 characters
+userInput:  .space 1001 # allow user to input string of 1000 characters
 string: .asciiz "Invalid"
 testing: .asciiz "testing"
 .text
@@ -17,6 +17,7 @@ main:
       li $t2, 0 # exponent tracker
       li $t3, 33 # base for my program
       li $t4, 0 # sum variable
+      li $t5, 0 # trailing white space counter
       la $t9, userInput
 
 
@@ -24,7 +25,7 @@ main:
 while:  
       lb $s1, 0($t9)
       beq $t1, 1000, exit
-      beq $t0, 4, exit
+      bgt $t0, 4, exit
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
 
@@ -50,10 +51,13 @@ tabOrSpaceCharFound:
       # if it is a tab or space char and len $t0 is 0 then we want to ignore because it is a leading whitespace 
       beq $t0, 0, skip # if t0 equals 0 leading whitespace dont update length of userinput string
       
+      # if t0 == 4 and whitespace char is found ignore?
+
       # if $t0 is not 0 we need to find out if there is trailing white space or it is part of string
       addi $t0,$t0, 1 # increment length of user string by 1
       addi $t1, $t1, 1 # increment loop
       addi $t9, $t9, 1 # increment loop address for loop
+      addi $t5, $t5, 1 # increment trailing whitespace counter
       j while
 calculate:
 
