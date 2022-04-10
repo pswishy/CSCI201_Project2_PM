@@ -25,7 +25,7 @@ main:
 # where we will count length of userinput
 while:  
       lb $s1, 0($t9)
-      beq $t1, 6, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+      beq $t1, 1000, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
       bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
       beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
       beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
@@ -97,9 +97,15 @@ charcheck:
       blt $s6, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error 
       ble $s6, 57, numCalc # 57 = '9' in ascii. if char <= 57 add it to sum
       
+      blt $s6, 65, errorMessage # 65 = 'A' in ascii. if char < 65 print error
+      ble $s6, 88, capitalCalc # 88 = 'X' in ascii. if char <= 88 do math
+
 numCalc:
       sub $s6, $s6, 48 # if number found update val of char to be - 48
       j multiplicationloop
+
+capitalCalc:
+
 multiplicationloop:
 
       beq $t2, 3, exponent3 
@@ -176,6 +182,7 @@ codetesting:
       j exit
 
 errorMessage:
+
       # print error message
       li $v0, 4
       la $a0, string
@@ -184,4 +191,7 @@ errorMessage:
       j exit
 
      
+trailingZeroGuardCase:
 
+      add $v1, $v1, $s6
+      j print
