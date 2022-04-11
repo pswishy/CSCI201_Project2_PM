@@ -86,12 +86,10 @@ findLength:
 
 verify:
     beq $t4, 4, exponent # if space is found and legth is already 4 we know it is a trailing whitespace
-    add $s5, $s5, 1 # s5 counts space char in string
-    bgt $s5, $t6, errorMessage # if number of spaces in string more than number of white space chars then it is apart of input string and we should print error
-
-    beq $s5, $t6, incrementlength # s5 will be our counter for how many spaces we incur in a string. if it equals t6(number of whitespace chars) we can continue?
+    addi $t4, $t4, 1 # add 1 to t4
     addi $a3, $a3, 1
     j findLength
+
 exponent:
       sub $a3, $a3, $t4 # go back to original memory addres now that we know length of string
       sub $t2, $t4, 1 # the first char exponent is length of char - 1
@@ -167,6 +165,8 @@ exit:
       li $v0, 10
       syscall
 print:
+
+    beq $v1, 0, errorMessage
  
       li $v0, 1
       addi $a0, $v1, 0
