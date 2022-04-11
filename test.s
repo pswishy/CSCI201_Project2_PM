@@ -17,7 +17,7 @@ main:
       li $t5, 0 # leading white space counter
       li $t8, 0 # sum variable
       li $t6, 0
-      li $s5, 0
+      # li $s5, 0
       la $t9, userInput
  # where we will count length of userinput
  while:  
@@ -80,15 +80,26 @@ findLength:
       lb $s6 0($a3)
       beq $s6, 10, exponent # if char equals line feed we know how long the string is so we know what exponent we need to use
       beq $s6, 32, verify # if char is a space character verify if it is apart of input string or trailing white space
+      beq $s6, 9, verify
       addi $t4, $t4, 1 # add 1 to t4
       addi $a3, $a3, 1
       j findLength
 
 verify:
     beq $t4, 4, exponent # if space is found and legth is already 4 we know it is a trailing whitespace
-    addi $t4, $t4, 1 # add 1 to t4
-    addi $a3, $a3, 1
-    j findLength
+    blt $t4, 4, makeSureAllOtherCharsRBlank # if the length of string is less than 4 and i find a space or tab char the char next to it HAS to be another space or it is automatically invalid
+
+makeSureAllOtherCharsRBlank:
+    move $s4, $a3 # move memory addres into s4?
+    addi $a3, $a3, 1 # going to check character right next to space char
+    lb $s5, 0($a3) # s5 is new feed s6 is space
+    # sub $a3, $a3, 1 # have to subtract memory address again to keep correct val
+    beq $s5, 32, findLength # if character next to it is space then go back to findlength
+    beq $s5, 9, findLength # if character next to it is space then go back to findlength
+    beq $s5, 10, exponent # if character next to it is space then go back to findlength
+    j codetesting
+
+
 
 exponent:
       sub $a3, $a3, $t4 # go back to original memory addres now that we know length of string
