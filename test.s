@@ -17,14 +17,14 @@ main:
       li $t5, 0 # leading white space counter
       li $t8, 0 # sum variable
       li $t6, 0
-      li $s2, 0 # break out of
+      li $s2, 0 # break out of loop for charcheck
       # li $s5, 0
       la $t9, userInput
  # where we will count length of userinput
  while:  
        lb $s1, 0($t9)
        # beq $t1, 6, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
-       beq $t1, 7, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+       beq $t1, 1000, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
        bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
        beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
        beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
@@ -110,7 +110,9 @@ exponent:
       j print
 charcheck:
       lb $s6, 0($a3)
-       blt $s6, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error 
+      # addi $s2, $s2, 1
+       # bgt $s2, 4, print
+      blt $s6, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error 
        ble $s6, 57, numCalc # 57 = '9' in ascii. if char <= 57 add it to sum
 
        blt $s6, 65, errorMessage # 65 = 'A' in ascii. if char < 65 print error
@@ -118,6 +120,7 @@ charcheck:
 
        blt $s6, 97, errorMessage # 'a' = 97 in ascii. if char < 97 skip it
        ble $s6, 120, lowerCalc # 'x' in ascii = 120. if char <= 120 add it to sum
+       bgt $s6, 120, errorMessage
 
 
 
