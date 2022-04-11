@@ -8,7 +8,7 @@ main:
       #-----------------------
       li $v0, 8  # gets user input from keyboard
       la $a0, userInput # stores user in put in $a0
-      li $a1, 1000 # max lengeth of user input string
+      li $a1, 7 # max lengeth of user input string
       syscall
 
       # first step count how many chars are in userinput while ignoring blank and space tabs
@@ -18,7 +18,7 @@ main:
       li $t4, 0 # length counter
       li $t5, 0 # leading white space counter
       li $t8, 0 # sum variable
-      li $t6, 1
+      li $t6, 0 # trailing white space counter
       la $t9, userInput
 
 
@@ -57,6 +57,7 @@ tabOrSpaceCharFound:
       # j errorMessage
       
 trailingWhiteSpaceCheck:
+      add $t6, $t6, 1
       beq $s1, 9, skip # if the char is a tab we have to give special consideration
       beq $s1, 32, skip # 32 = space char, 9 = tab char
       beq $s1, 0, skip # 0 = null char
@@ -70,7 +71,9 @@ calculateMemoryAdress:
       # we need to pass memory address of string to function
       # memory address stored in $a2
       # --------------------
-      sub $a3, $a2, 5 # memory address of 4 char str - 5 is now stored in s3
+      # nummber of trailing white space chars is t1 - t6 - t4
+      sub $a3, $a2, 5 # memory address of 4 char str - 5 is now stored in 
+      # sub $a3, $a2, $t6
       # a3 holds memory address argument
 
 
@@ -85,6 +88,9 @@ findLength:
       
 
 exponent:
+      # nummber of trailing white space chars is t1 - t6 - t4
+      # sub $s5 $t1, $t6
+      # sub $s5, $s5, $t4
       sub $a3, $a3, $t4 # go back to original memory addres now that we know length of string
       sub $t2, $t4, 1 # the first char exponent is length of char - 1
       # lb $s6 0($a3) # load  char into $s6
@@ -93,8 +99,8 @@ exponent:
       j print
 charcheck:
       lb $s6, 0($a3)
-
-      blt $s6, 48, errorMessage # 48 = '0' in ascii. if char < 48 print error 
+      # beq $s6, 32, checkIfTrailingSpace
+      blt $s6, 48, codetesting # 48 = '0' in ascii. if char < 48 print error 
       ble $s6, 57, numCalc # 57 = '9' in ascii. if char <= 57 add it to sum
       
       blt $s6, 65, errorMessage # 65 = 'A' in ascii. if char < 65 print error
