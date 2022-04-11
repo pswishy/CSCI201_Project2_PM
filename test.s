@@ -17,13 +17,14 @@ main:
       li $t5, 0 # leading white space counter
       li $t8, 0 # sum variable
       li $t6, 0
+      li $s2, 0 # break out of
       # li $s5, 0
       la $t9, userInput
  # where we will count length of userinput
  while:  
        lb $s1, 0($t9)
        # beq $t1, 6, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
-       beq $t1, 1000, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+       beq $t1, 7, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
        bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
        beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
        beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
@@ -97,9 +98,7 @@ makeSureAllOtherCharsRBlank:
     beq $s5, 32, findLength # if character next to it is space then go back to findlength
     beq $s5, 9, findLength # if character next to it is space then go back to findlength
     beq $s5, 10, exponent # if character next to it is space then go back to findlength
-    j codetesting
-
-
+    j errorMessage
 
 
 
@@ -117,18 +116,29 @@ charcheck:
        blt $s6, 65, errorMessage # 65 = 'A' in ascii. if char < 65 print error
        ble $s6, 88, capitalCalc # 88 = 'X' in ascii. if char <= 88 do math
 
+       blt $s6, 97, errorMessage # 'a' = 97 in ascii. if char < 97 skip it
+       ble $s6, 120, lowerCalc # 'x' in ascii = 120. if char <= 120 add it to sum
+
+
+
  numCalc:
        sub $s6, $s6, 48 # if number found update val of char to be - 48
        j multiplicationloop
 
  capitalCalc:
 
+    sub $s6, $s6, 55 # if capital letter found subtract val by 55
+    j multiplicationloop
+
+lowerCalc:
+    sub $s6, $s6, 87
+    j multiplicationloop
  multiplicationloop:
 
     beq $t2, 3, exponent3 
-      beq $t2, 2, exponent2
-      beq $t2, 1, exponent1
-      beq $t2, 0, exponent0
+    beq $t2, 2, exponent2
+    beq $t2, 1, exponent1
+    beq $t2, 0, exponent0
      
 # s6 is sum variable
 # t3 holds base
@@ -167,6 +177,7 @@ exponent0:
       add $v1, $t8, $s6 # exponent 0 just add char value to sum
       # li $s7, 0
       jr $ra
+      # j print
 increment:
       addi $a3, $a3, 1 # increment byte address
       j charcheck
@@ -179,7 +190,7 @@ exit:
       syscall
 print:
 
-    beq $v1, 0, errorMessage
+    # beq $v1, 0, errorMessage
  
       li $v0, 1
       addi $a0, $v1, 0
@@ -196,7 +207,7 @@ codetesting:
        # print error message
        li $v0, 4
        la $a0, string
-      syscall
+       syscall
        j exit
 
 
