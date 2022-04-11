@@ -74,15 +74,15 @@ calculateMemoryAdress:
 trailingWhiteSpaceMemoryAddress:
     sub $a2, $a2, $t6 # if there is trailing whitespace ned to find correct memory address
     sub $a3, $a2, 5
-
+    move $s4, $a3
     j findLength
 findLength:
-      lb $s6 0($a3)
+      lb $s6 0($s4)
       beq $s6, 10, exponent # if char equals line feed we know how long the string is so we know what exponent we need to use
       beq $s6, 32, verify # if char is a space character verify if it is apart of input string or trailing white space
       beq $s6, 9, verify
       addi $t4, $t4, 1 # add 1 to t4
-      addi $a3, $a3, 1
+      addi $s4, $s4, 1
       j findLength
 
 verify:
@@ -90,7 +90,6 @@ verify:
     blt $t4, 4, makeSureAllOtherCharsRBlank # if the length of string is less than 4 and i find a space or tab char the char next to it HAS to be another space or it is automatically invalid
 
 makeSureAllOtherCharsRBlank:
-    move $s4, $a3 # move memory addres into s4?
     addi $s4, $s4, 1 # going to check character right next to space char
     lb $s5, 0($s4) # s5 is new feed s6 is space
     # sub $a3, $a3, 1 # have to subtract memory address again to keep correct val
@@ -98,6 +97,8 @@ makeSureAllOtherCharsRBlank:
     beq $s5, 9, findLength # if character next to it is space then go back to findlength
     beq $s5, 10, exponent # if character next to it is space then go back to findlength
     j codetesting
+
+
 
 
 
