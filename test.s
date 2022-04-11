@@ -23,7 +23,7 @@ main:
  while:  
        lb $s1, 0($t9)
        # beq $t1, 6, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
-       beq $t1, 7, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
+       beq $t1, 1000, calculateMemoryAdress # finished processing all 1000 chars and if after 4 chars all are whitespace we can do check
        bgt $t0, 4, trailingWhiteSpaceCheck # after we get first four chars the only other other valid char is a white space char
        beq $s1, 9, tabOrSpaceCharFound # if the char is a tab we have to give special consideration
        beq $s1, 32, tabOrSpaceCharFound # 32 = space char, 9 = tab char
@@ -68,13 +68,14 @@ calculateMemoryAdress:
       bgt $t6, 0, trailingWhiteSpaceMemoryAddress
 
       sub $a3, $a2, 5
+      move $s4, $a3
       # a3 holds memory address argument
       j findLength
 
 trailingWhiteSpaceMemoryAddress:
     sub $a2, $a2, $t6 # if there is trailing whitespace ned to find correct memory address
     sub $a3, $a2, 5
-    move $s4, $a3
+    add $s4, $a3, 0
     j findLength
 findLength:
       lb $s6 0($s4)
@@ -103,7 +104,7 @@ makeSureAllOtherCharsRBlank:
 
 
 exponent:
-      sub $a3, $a3, $t4 # go back to original memory addres now that we know length of string
+      # sub $a3, $a3, $t4 # go back to original memory addres now that we know length of string
       sub $t2, $t4, 1 # the first char exponent is length of char - 1
       # lb $s6 0($a3) # load  char into $s6
       jal charcheck
