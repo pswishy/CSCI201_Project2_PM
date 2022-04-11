@@ -74,11 +74,11 @@ trailingWhiteSpaceMemoryAddress:
     sub $a2, $a2, $t6 # if there is trailing whitespace ned to find correct memory address
     sub $a3, $a2, 5
 
-    lb $s7 0($a2)
-    j exit
+    j findLength
 findLength:
       lb $s6 0($a3)
       beq $s6, 10, exponent # if char equals line feed we know how long the string is so we know what exponent we need to use
+      beq $t4, 4, exponent # if char length is 4 go to exponent 
       addi $t4, $t4, 1 # add 1 to t4
       addi $a3, $a3, 1
       j findLength
